@@ -9,14 +9,25 @@ import (
 	"time"
 
 	"github.com/dunky-star/protobv1/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
     l := log.New(os.Stdout, "product-api", log.LstdFlags)
 	hProducts := handlers.NewProducts(l)
 
-	sm := http.NewServeMux()
-	sm.Handle("/", hProducts)
+	// Using Gorilla Mux and subrouters for routing.
+	sm := mux.NewRouter()
+    getRouter := sm.Methods(http.MethodGet).Subrouter()
+	// Create a new serve mux and register the handlers
+	getRouter.HandleFunc("/products", hProducts.GetProducts)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/products", hProducts.AddProduct)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/products/{:id[0-9]+}", hProducts.UpdateProducts)
+	
 
 	s := &http.Server{
 		Addr:         ":9090",
