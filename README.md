@@ -1,5 +1,3 @@
-## Go Lang Protobuf Beginner
-
 # Product API
 
 ## Generating Swagger Documentation
