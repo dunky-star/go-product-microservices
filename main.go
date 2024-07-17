@@ -13,10 +13,10 @@ import (
 
 func main() {
     l := log.New(os.Stdout, "product-api", log.LstdFlags)
-	hh := handlers.NewProducts(l)
+	hProducts := handlers.NewProducts(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
+	sm.Handle("/", hProducts)
 
 	s := &http.Server{
 		Addr:         ":9090",
