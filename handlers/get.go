@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"github.com/dunky-star/protobv1/product-api/data"
-	
 
+	"github.com/dunky-star/protobv1/product-api/data"
 )
 
 // swagger:route GET /products products listProducts
