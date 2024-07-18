@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/dunky-star/protobv1/handlers"
+	"github.com/dunky-star/protobv1/product-api/data"
 	"github.com/gorilla/mux"
 )
 
@@ -16,23 +17,28 @@ import (
 
 func main() {
     l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	v := data.NewValidation()
 	// create the handlers
-	hProducts := handlers.NewProducts(l)
+	hProducts := handlers.NewProducts(l, v)
 
 	// Using Gorilla Mux and subrouters for routing.
 	sm := mux.NewRouter()
     getRouter := sm.Methods(http.MethodGet).Subrouter()
 	// Create a new serve mux and register the handlers
-	getRouter.HandleFunc("/products", hProducts.GetProducts)
+	getRouter.HandleFunc("/products", hProducts.ListAll)
+	getRouter.HandleFunc("/products/{id:[0-9]+}", hProducts.ListSingle)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/products", hProducts.AddProduct)
+	postRouter.HandleFunc("/products", hProducts.Create)
 	postRouter.Use(hProducts.MiddlewareValidateProduct)
 	
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/products/{:id[0-9]+}", hProducts.UpdateProducts)
+	putRouter.HandleFunc("/products/{:id[0-9]+}", hProducts.Update)
 	putRouter.Use(hProducts.MiddlewareValidateProduct)
+
+	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/products/{id:[0-9]+}", hProducts.Delete)
 	
 
 	// create a new server
