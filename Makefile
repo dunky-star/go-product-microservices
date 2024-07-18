@@ -9,3 +9,9 @@ swagger:
 	@echo ....
 
 	swagger generate spec -o ./swagger.yaml --scan-models
+
+
+protos:
+	protoc -I protos/ protos/currency.proto --go_out=plugins=grpc:protos/currency
+
+.PHONY: protos swagger install_swagger
